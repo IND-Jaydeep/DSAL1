@@ -1,0 +1,158 @@
+import java.util.Scanner;
+
+class Student {
+    private int id;
+    private String name;
+    private int age;
+
+    public Student(int id, String name, int age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Student [ID=" + id + ", Name=" + name + ", Age=" + age + "]";
+    }
+}
+
+class StudentDatabase {
+    private Student[] students;
+    private int size;
+    private int capacity;
+
+    public StudentDatabase(int capacity) {
+        this.capacity = capacity;
+        students = new Student[capacity];
+        size = 0;
+    }
+
+    public void insertStudent(int id, String name, int age) {
+        if (size < capacity) {
+            students[size++] = new Student(id, name, age);
+            System.out.println("Student inserted successfully.");
+        } else {
+            System.out.println("Database is full. Cannot insert student.");
+        }
+    }
+
+    public void deleteStudent(int id) {
+        boolean found = false;
+        for (int i = 0; i < size; i++) {
+            if (students[i].getId() == id) {
+                found = true;
+                for (int j = i; j < size - 1; j++) {
+                    students[j] = students[j + 1];
+                }
+                students[--size] = null;
+                System.out.println("Student deleted successfully.");
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("Student not found.");
+        }
+    }
+
+    public void updateStudent(int id, String newName, int newAge) {
+        boolean found = false;
+        for (int i = 0; i < size; i++) {
+            if (students[i].getId() == id) {
+                students[i].setName(newName);
+                students[i].setAge(newAge);
+                System.out.println("Student updated successfully.");
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("Student not found.");
+        }
+    }
+
+    public void displayStudents() {
+        if (size == 0) {
+            System.out.println("No students to display.");
+        } else {
+            for (int i = 0; i < size; i++) {
+                System.out.println(students[i]);
+            }
+        }
+    }
+}
+
+public class StudentDatabaseApp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        StudentDatabase db = new StudentDatabase(100);
+
+        while (true) {
+            System.out.println("\nStudent Database Menu:");
+            System.out.println("1. Insert Student");
+            System.out.println("2. Delete Student");
+            System.out.println("3. Update Student");
+            System.out.println("4. Display Students");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter ID: ");
+                    int id = scanner.nextInt();
+                    scanner.nextLine();  // Consume newline
+                    System.out.print("Enter Name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter Age: ");
+                    int age = scanner.nextInt();
+                    db.insertStudent(id, name, age);
+                    break;
+                case 2:
+                    System.out.print("Enter ID to delete: ");
+                    id = scanner.nextInt();
+                    db.deleteStudent(id);
+                    break;
+                case 3:
+                    System.out.print("Enter ID to update: ");
+                    id = scanner.nextInt();
+                    scanner.nextLine();  // Consume newline
+                    System.out.print("Enter new Name: ");
+                    name = scanner.nextLine();
+                    System.out.print("Enter new Age: ");
+                    age = scanner.nextInt();
+                    db.updateStudent(id, name, age);
+                    break;
+                case 4:
+                    db.displayStudents();
+                    break;
+                case 5:
+                    System.out.println("Exiting program.");
+                    scanner.close();
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
